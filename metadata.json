@@ -1,0 +1,6 @@
+{
+  "name": "Text to Animation Generator",
+  "description": "Generate smooth HTML5 Canvas animations from natural language prompts using Google Gemini AI.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
