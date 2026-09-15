@@ -18,7 +18,7 @@ import re
 import streamlit as st
 import streamlit.components.v1 as components
 import google.generativeai as genai
-default_key = os.environ.get("GEMINI_API_KEY", "AQ.Ab8RN6IUPSxJt45nDp8U6uGYVEvNrUMUSaSp9mwLH1VNkaC99g")
+default_key = os.environ.get("GEMINI_API_KEY", "AQ.Ab8RN6LZHfeAjVKUxydXo5HpO8nw5sPkHj2b7fk8y0Aew5mUUg")
 # ==============================================================================
 # 1. PAGE CONFIGURATION & METADATA
 # ==============================================================================
