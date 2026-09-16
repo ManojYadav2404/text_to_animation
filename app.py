@@ -1,24 +1,9 @@
-"""
-Text to Animation Generator - Streamlit Application
----------------------------------------------------
-This application leverages the Google Gemini API (via google-generativeai)
-to translate natural language descriptions into complete, interactive
-HTML5 / JavaScript Canvas animations rendered live in the Streamlit UI.
-
-Dependencies:
-    - streamlit
-    - google-generativeai
-
-Usage:
-    streamlit run app.py
-"""
-
 import os
 import re
 import streamlit as st
 import streamlit.components.v1 as components
 import google.generativeai as genai
-default_key = os.environ.get("GEMINI_API_KEY", "AQ.Ab8RN6LZHfeAjVKUxydXo5HpO8nw5sPkHj2b7fk8y0Aew5mUUg")
+default_key = os.environ.get("GEMINI_API_KEY", "")
 # ==============================================================================
 # 1. PAGE CONFIGURATION & METADATA
 # ==============================================================================
@@ -47,17 +32,6 @@ SYSTEM_PROMPT = (
 # 3. HELPER FUNCTIONS
 # ==============================================================================
 def clean_generated_code(raw_text: str) -> str:
-    """
-    Strips any residual markdown code fences or backticks (e.g., ```html ... ```)
-    that the LLM might hallucinate despite system prompt instructions.
-    
-    Args:
-        raw_text (str): The raw output string from the Gemini API.
-        
-    Returns:
-        str: Pure, executable HTML string without markdown fences.
-    """
-
     cleaned = raw_text.strip()
     
     # Remove leading ```html or ``` markdown markers
@@ -74,20 +48,6 @@ def clean_generated_code(raw_text: str) -> str:
 
 
 def generate_animation_html(api_key: str, prompt: str) -> str:
-    """
-    Configures the Gemini API client, sends the user's prompt to gemini-1.5-flash
-    with the strict creative coder system prompt, and returns cleaned HTML code.
-    
-    Args:
-        api_key (str): The Google Gemini API key provided by the user.
-        prompt (str): The natural language animation idea.
-        
-    Returns:
-        str: The generated single-file HTML document.
-        
-    Raises:
-        Exception: If the API call fails or encounters network/authentication errors.
-    """
     # Configure the google-generativeai SDK with the provided API key
     genai.configure(api_key=api_key)
     
@@ -124,12 +84,11 @@ if "last_prompt" not in st.session_state:
 # 5. SIDEBAR CONFIGURATION (API KEY & HELP)
 # ==============================================================================
 with st.sidebar:
-    #st.header("🔑 API Settings")
-    #st.markdown("Enter your Gemini API key to activate the animation generator.")
+    st.header("🔑 API Settings")
+    st.markdown("Enter your Gemini API key to activate the animation generator.")
     # Secure password input for the API key (also checks environment variable fallback)
-    api_key_input=default_key
-    #api_key_input = st.text_input(label="Gemini API Key",value=default_key,type="password",help="Get a free API key from Google AI Studio at https://aistudio.google.com/",placeholder="AIzaSy...")
-    #st.divider()
+    api_key_input = st.text_input(label="Gemini API Key",value=default_key,type="password",help="Get a free API key from Google AI Studio at https://aistudio.google.com/",placeholder="AIzaSy...")
+    st.divider()
     
     st.subheader("💡 Sample Ideas")
     sample_ideas = [
@@ -209,15 +168,16 @@ if st.session_state.generated_html:
     # Canvas fits in 600x400, container height is set to 600 for comfortable viewing
     components.html(st.session_state.generated_html, height=600, scrolling=True)
     
-    # Code expander showing the exact underlying HTML/CSS/JS written by the AI
+    # Code expander showing the exact underlying HTML/CSS/JS
     with st.expander("🔍 View Generated HTML/JavaScript Source Code", expanded=False):
         st.markdown(
             "Below is the complete, single-file HTML5 Canvas document genearted :"
         )
         st.code(st.session_state.generated_html, language="html")
-        st.download_button(
-            label="💾 Download animation.html",
-            data=st.session_state.generated_html,
-            file_name="animation.html",
-            mime="text/html"
-        )
+
+    st.download_button(
+        label="💾 Download animation.html",
+        data=st.session_state.generated_html,
+        file_name="animation.html",
+        mime="text/html"
+    )
